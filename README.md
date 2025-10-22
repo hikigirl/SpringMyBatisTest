@@ -42,6 +42,14 @@
   - `list.jsp`
   - `add.jsp`
 
+##### src/main/resources - mybatis 세팅 관련
+- config 폴더
+  - `mybatis-config.xml`
+- mappers 폴더(XML Mapper)
+  - `address.xml` : 여기에 쿼리를 작성
+
+
 ##### src/test/java - 단위테스트용
 - com.test.java.model
   - `CommonsDBCPTests.java` : JUnit Test Case로 만들기(JUnit4 버전)
+  - `MyBatisTests.java`: mybatis 단위 test

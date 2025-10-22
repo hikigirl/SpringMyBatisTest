@@ -17,4 +17,8 @@ create sequence seqAddress;
 select * from tblAddress;
 insert into tblAddress
     values (seqAddress.nextval, '홍길동', 20, '서울시 강남구 대치동', 'm');
+insert into tblAddress
+    values (seqAddress.nextval, '강아지', 30, '강아지마을', 'm');
+insert into tblAddress
+    values (seqAddress.nextval, '고양이', 27, '고양이마을', 'f');
 commit;

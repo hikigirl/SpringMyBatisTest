@@ -7,8 +7,20 @@
 	<title>Insert title here</title>
 	<link rel="stylesheet" href="http://bit.ly/3WJ5ilK" />
 </head>
-<body>
+<body class="wide">
 	<!-- result.jsp -->
 	<h1>result.jsp</h1>
+	<div>result: ${result}</div>
+	<br />
+	<div>name: ${name}</div>
+	<br />
+	<div>dto: ${dto}</div>
+	<div>seq: ${dto.seq}</div>
+	<div>name: ${dto.name}</div>
+	<div>age: ${dto.age}</div>
+	<div>address: ${dto.address}</div>
+	<div>gender: ${dto.gender}</div>
+	<br />
+	
 </body>
 </html>

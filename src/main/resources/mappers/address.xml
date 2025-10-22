@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- src/main/resources -> config -> address.xml -->
+<!-- XML Mapper -->
+<mapper namespace="address">
+	<select id="time" resultType="String">
+		select sysdate from dual
+	</select>
+	<insert id="m1">
+		insert into tblAddress
+    		values (seqAddress.nextval, '아무개', 20, '서울시 강남구 대치동', 'm')
+    	<!-- 결국 JDBC이기 때문에 세미콜론 적으면 안됨 -->
+	</insert>
+	
+	<delete id="m2" parameterType="String">
+		delete from tblAddress
+			where seq = #{seq}
+		<!-- 매개변수 ? 대신 #{} 사용 -->
+	</delete>
+	
+	<!-- <update id="m3" parameterType="java.util.HashMap"> -->
+	<!-- "java.util.HashMap"은 이미 map으로 별명 처리가 되어있음 -->
+	<update id="m3" parameterType="map">
+		update tblAddress set
+			age = #{age},
+			address = #{address}
+		where seq = #{seq}
+	
+	</update>
+	
+	<update id="m4" parameterType="adto">
+		update tblAddress set
+			age = #{age},
+			address = #{address}
+		where seq = #{seq}
+	
+	</update>
+	
+	<select id="m5" parameterType="String" resultType="String">
+		select name from tblAddress
+			where seq = #{seq}
+	</select>
+	
+	<select id="m6" parameterType="String" resultType="adto">
+		select * from tblAddress
+			where seq = #{seq}
+	</select>
+	
+	<!-- 돌려받는 레코드 하나하나의 타입을 결정해서 resultType에 적는다. -->
+	<select id="m7" resultType="String">
+		select name from tblAddress order by name asc
+	</select>
+	
+	<select id="m8" resultType="adto">
+		select * from tblAddress order by seq asc
+	</select>
+
+</mapper>
