@@ -5,13 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString
-public class AddressDTO {
+public class ProjectDTO {
 	private String seq;
 	private String name;
-	private Integer age;
-	private String address;
-	private String gender;
-	
-	//1:1관계(tblAddress - tblPoint)
-	private PointDTO pdto;
+	private String location;
+	private String num;
 }

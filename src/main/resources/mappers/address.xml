@@ -56,5 +56,205 @@
 	<select id="m8" resultType="adto">
 		select * from tblAddress order by seq asc
 	</select>
-
+	
+	<!-- 검색 기능 관련 -->
+	<!-- MyBatis 바인딩 표현식, ${}와 #{} -->
+	<select id="m9" parameterType="map" resultType="adto">
+		select * from tblAddress where ${column} = #{word}
+	</select>
+	
+	<!-- 
+		org.apache.ibatis.builder.BuilderException: Error creating document instance.  
+		Cause: org.xml.sax.SAXParseException; lineNumber: 67; columnNumber: 39; 
+		요소 콘텐츠는 올바른 형식의 문자 데이터 또는 마크업으로 구성되어야 합니다. 
+	-->
+	<select id="m10" parameterType="Integer" resultType="adto">
+		<!-- select * from tblAddress where age &lt; #{age} -->
+		select * from tblAddress 
+			<![CDATA[
+			where age < #{age}
+			]]>
+	</select>
+	
+	<select id="m11" parameterType="String" resultType="adto">
+		<!-- select * from tblAddress 
+			where address like '%' || #{word} || '%' -->
+			
+		select * from tblAddress 
+			where address like '%${word}%'
+	</select>
+	
+	<select id="m12" parameterType="String" resultType="adto">
+		<!--
+			동적 쿼리
+			- 상황에 따라 쿼리 구문의 일부를 다르게 만들어야 하는 경우 
+			- 지금은 상황에 따라 where절을 없애야 함
+			
+			MyBatis는 동적 쿼리를 태그로 지원함
+			- <if>, <choose>, <foreach> 등...
+		-->
+		
+		<!-- <if test='gender=="all"'>
+		select * from tblAddress
+		</if>
+		<if test='gender=="m"'>
+		select * from tblAddress where gender = 'm'
+		</if>
+		<if test='gender=="f"'>
+		<if test="gender=='f'.toString()">
+		select * from tblAddress where gender = 'f'
+		</if> -->
+		
+		
+		<!-- select * from tblAddress
+		
+			<if test='gender=="m"'>
+			where gender = 'm'
+			</if>
+			
+			<if test="gender == 'f'.toString()">
+			where gender = 'f'
+			</if> -->
+			
+		<!-- 
+		select * from tblAddress
+			<if test='gender!="all"'>
+			where gender = #{gender}
+			</if> 
+		-->
+		select * from tblAddress
+			<choose>
+				<when test='gender=="m"'>where gender = 'm'</when>
+				<when test='gender=="f"'>where gender = 'f'</when>
+				<otherwise></otherwise>
+			</choose>
+		
+		
+	</select>
+	
+	<select id="m13" parameterType="adto" resultType="adto">
+		<!-- select from tblAddress where 1=1
+			<if test="age !=null">and age > #{age}</if>
+			<if test="gender !=null">and gender = #{gender}</if>
+			<if test="address !=null">and address like '%'|| #{address} ||'%'</if> 
+		-->
+			
+		select * from tblAddress
+		<where>
+			<if test="age !=null"> and age > #{age}</if>
+			<if test="gender !=null">and gender = #{gender}</if>
+			<if test="address !=null">and address like '%'|| #{address} ||'%'</if>
+		</where>
+	</select>
+	
+	<select id="m14" parameterType="list" resultType="idto">
+		<!-- 
+		select
+			num, name, buseo, jikwi, basicpay 
+		from tblInsa
+			where buseo in (#{0}, #{1}, #{2})
+		-->
+		select
+			num, name, buseo, jikwi, 
+			basicpay as salary 
+		from tblInsa
+			<where>
+			buseo
+				<foreach collection="list" item="item" open="in (" close=")" separator=",">
+					#{item}
+				</foreach>	
+			</where>
+	</select>
+	<insert id="add" parameterType="adto">
+		insert into tblAddress
+    		values (seqAddress.nextval, #{name}, #{age}, #{address}, #{gender})
+	</insert>
+	<!-- 이제 사용안함 -->
+	<select id="getSeq" resultType="String">
+		select max(seq) from tblAddress
+	</select>
+	
+	<!-- <insert id="addPoint" parameterType="pdto">
+		insert into tblPoint(seq, point, aseq)
+			values (seqPoint.nextVal, #{point}, #{aseq})
+	</insert> -->
+	<insert id="addPoint" parameterType="pdto">
+		<!-- 특정 컬럼 값을 가져오기(select PK) -->
+		<selectKey order="BEFORE" resultType="String" keyProperty="aseq">
+			select max(seq) from tblAddress
+		</selectKey>
+		
+		insert into tblPoint(seq, point, aseq)
+			values (seqPoint.nextVal, #{point}, #{aseq})
+	</insert>
+	
+	<select id="m17" resultType="apdto">
+		select
+		    a.seq, a.name, a.age, a.address, a.gender,
+		    p.seq as pseq, p.point, p.aseq
+		from tblAddress a
+		    left outer join tblPoint p on a.seq = p.aseq
+		order by a.seq asc
+	</select>
+	
+	<!-- 1:1 관계 -->
+	<resultMap type="adto" id="addressMap">
+		<!-- 
+			컬럼 매핑
+			- 아래에서 select한 결과 컬럼 -> 연결 -> adto의 Setter
+		-->
+		<id column="seq" property="seq" /> <!-- PK는 ID 태그 -->
+		<result column="name" property="name" /> <!-- 나머지 일반 컬럼은 result 태그 -->
+		<result column="age" property="age" />
+		<result column="address" property="address" />
+		<result column="gender" property="gender" />
+		<association property="pdto" resultMap="pointMap" />
+		
+	</resultMap>
+	
+	<resultMap type="pdto" id="pointMap">
+		<id column="pseq" property="seq" />
+		<result column="point" property="point" />
+		<result column="aseq" property="aseq" />
+	</resultMap>
+	
+	<select id="m18" resultMap="addressMap">
+		select
+			a.seq, a.name, a.age, a.address, a.gender,
+		    p.seq as pseq, p.point, p.aseq 
+ 		from tblAddress a
+    		left outer join tblPoint p on a.seq = p.aseq
+	</select>
+	
+	
+	<!-- 1:N 관계 -->
+	<resultMap type="idto" id="insaMap">
+		<id column="inum" property="num"/>
+		<result column="iname" property="name" />
+		<result column="buseo" property="buseo" />
+		<result column="jikwi" property="jikwi" />
+		<result column="basicpay" property="salary" />
+		<collection property="project" resultMap="projectMap" />
+	</resultMap>
+	<resultMap type="com.test.java.model.ProjectDTO" id="projectMap">
+		<id column="seq" property="seq"/>
+		<result column="pname" property="name" />
+		<result column="pnum" property="num" />
+	</resultMap>
+	
+	<select id="m19" resultMap="insaMap">
+		select
+			i.num as inum,
+		    i.name as iname,
+		    i.buseo,
+		    i.jikwi,
+		    i.basicpay,
+		    p.seq,
+		    p.name as pname,
+		    p.num as pnum
+		from tblInsa i
+		left outer join tblProject p
+			on i.num = p.num
+	</select>
+	
 </mapper>

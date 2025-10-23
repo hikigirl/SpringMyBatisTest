@@ -7,7 +7,7 @@
 	<title>Insert title here</title>
 	<link rel="stylesheet" href="http://bit.ly/3WJ5ilK" />
 </head>
-<body>
+<body class="wide">
 	<!-- list.jsp -->
 	<h1>쿼리 결과</h1>
 	<table class="content">
@@ -39,5 +39,38 @@
 		</tr>
 		</c:forEach>
 	</table>
+	
+	<hr />
+	
+	<c:forEach items="${alist}" var="adto">
+	<div>${adto}</div>
+	<hr />
+	<div>${adto.pdto.aseq}</div>
+	<hr />
+	</c:forEach>
+	
+	<hr />
+	<table>
+		<c:forEach items="${ilist}" var="idto">
+			<tr>
+				<td>${idto.num}</td>
+				<td>${idto.name}</td>
+				<td>${idto.buseo}</td>
+				<td>${idto.jikwi}</td>
+				<td>${idto.salary}</td>
+				<td class="left">
+					<ul>
+					<c:forEach items="${idto.project}" var="pdto">
+						<li>${pdto.name}</li>
+					</c:forEach>
+					</ul>
+				</td>
+			</tr>
+		
+		</c:forEach>
+	
+	</table>
+	
+	
 </body>
 </html>
