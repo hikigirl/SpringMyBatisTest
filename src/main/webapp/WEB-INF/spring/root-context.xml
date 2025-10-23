@@ -16,15 +16,17 @@
 
 	<!-- HikariCP -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-		<property name="driverClassName"
+		<!-- 기본 -->
+		<!--<property name="driverClassName"
 			value="oracle.jdbc.driver.OracleDriver"></property>
 		<property name="jdbcUrl"
-			value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+			value="jdbc:oracle:thin:@localhost:1521:xe"></property> -->
 
-		<!-- <property name="driverClassName"
+		<!-- log4j 추가되어있음 -->
+		<property name="driverClassName"
 			value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
 		<property name="jdbcUrl"
-			value="jdbc:log4jdbc:oracle:thin:@localhost:1521:xe"></property> -->
+			value="jdbc:log4jdbc:oracle:thin:@localhost:1521:xe"></property>
 
 		<property name="username" value="spring"></property>
 		<property name="password" value="java1234"></property>
