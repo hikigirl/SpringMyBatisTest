@@ -86,3 +86,5 @@ select
 from tblInsa i
 left outer join tblProject p
     on i.num = p.num;
+
+select count(*) from tblAddress;
